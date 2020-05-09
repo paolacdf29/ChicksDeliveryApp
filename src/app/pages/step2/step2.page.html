@@ -1,0 +1,96 @@
+<app-header titulo='Order info'></app-header>
+
+
+<ion-content >
+    <ion-item *ngIf='!users'>
+        <ion-card-subtitle color="danger">You must be logged to proceed</ion-card-subtitle>    
+    </ion-item>
+    
+    <form #userinfoform='ngForm' (ngSubmit)='onSubmitTemplate()'>
+        <ion-list>
+            <ion-radio-group [(ngModel)]='orderInfo.delivertype' required name='place'>
+                <ion-list-header color="dark">
+                    <ion-label>Where do you want it?</ion-label>
+                </ion-list-header>
+                <ion-item *ngIf='dataService.currentRest.delivery == 1'>
+                    <ion-label>At home - Delivery</ion-label>
+                    <ion-radio slot="start" value="Delivery"></ion-radio>
+                </ion-item>    
+                <ion-item *ngIf='dataService.currentRest.takeaway == 1'>
+                    <ion-label>At the restuarant - Take Away</ion-label>
+                    <ion-radio slot="start" value="TakeAway"></ion-radio>
+                </ion-item>
+            </ion-radio-group>
+    
+            <ion-list-header color='dark'>
+                <ion-label>When</ion-label>
+            </ion-list-header>
+            <ion-item>
+                <ion-label>Hour</ion-label>
+                <ion-select placeholder="Select One"  [(ngModel)]='orderInfo.timeSet' name='time'>
+                    <ion-select-option value="soon">As soon as posible</ion-select-option>
+                    <ion-select-option value="13hs">13:00 PM</ion-select-option>
+                    <ion-select-option value="14hs">14:00 PM</ion-select-option>
+                    <ion-select-option value="15hs">15:00 PM</ion-select-option>
+                    <ion-select-option value="16hs">16:00 PM</ion-select-option>
+                    <ion-select-option value="17hs">17:00 PM</ion-select-option>
+                    <ion-select-option value="18hs">18:00 PM</ion-select-option>
+                    <ion-select-option value="19hs">19:00 PM</ion-select-option>
+                    <ion-select-option value="20hs">20:00 PM</ion-select-option>
+                </ion-select>
+            </ion-item>
+    
+            
+            <section *ngFor='let user of users'>
+                <ion-list-header color='dark'>
+                    <ion-label>Comfirm your personal info</ion-label>
+                </ion-list-header>
+                
+                <ion-item *ngIf='!orderInfo.changeAddress'>
+                    <ion-label position='floating'>Address:</ion-label>
+                    <ion-input type='string' [value]='user.direccion_client' [readonly]='!orderInfo.changeAddress'></ion-input>
+                </ion-item>
+
+                <ion-item *ngIf='orderInfo.changeAddress'>
+                    <ion-label position='floating'>Address:</ion-label>
+                    <ion-input type='string' [(ngModel)]='newAddress' name='newaddres'></ion-input>
+                </ion-item>
+    
+                <ion-item>
+                    <ion-label>Change addres</ion-label>
+                    <ion-toggle (ionChange)='changeMyAddress()'></ion-toggle>
+                </ion-item>    
+
+                <ion-item>
+                    <ion-label position='floating'>Phone number:</ion-label>
+                    <ion-input type='number' [value]='user.Telefono_client' readonly='true'></ion-input>
+                </ion-item>
+            </section>
+            
+
+            <ion-list-header color='dark'>
+                <ion-label>Leave a coment for the restaurant</ion-label>
+            </ion-list-header>
+            <ion-item>
+                <ion-label position='floating'>Notes</ion-label>
+                <ion-input type='string' name='pnote' [(ngModel)]='orderInfo.comentarios'></ion-input>
+            </ion-item>
+        </ion-list>
+    
+        <ion-text color="" *ngIf='dataService.currentRest.open == 0'>
+            <p class="ion-padding">We're sorry the restaurant is close</p>
+        </ion-text>
+
+        <ion-button color='dark' 
+                    expand='block'
+                    type='submit'
+                    [disabled]='userinfoform.invalid'
+                    class="ion-padding"
+                    *ngIf='dataService.currentRest.open == 1'>
+            Comfirm (Go to checkout)
+        </ion-button>   
+     </form>
+
+</ion-content>
+
+<app-cart-fab></app-cart-fab>

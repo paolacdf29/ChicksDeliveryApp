@@ -1,0 +1,33 @@
+.top-20{
+    margin-top: 20px;
+}
+
+// .login-avatar{
+//     height: 200px
+// }
+
+// .flex{
+//     display: flex;
+// }
+
+
+
+.mainSlide, .mainSlide ion-slide {
+    width: 100%;
+    height: 100%;
+}
+
+img {
+    width: 120px;
+}
+
+.pick-avatar {
+    width: 80px;
+    opacity: 0.3;
+}
+
+.pick-avatar-seleccionado {
+    transition: opacity 0.5s linear;
+    opacity: 1 !important;
+}
+

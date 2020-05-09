@@ -1,0 +1,54 @@
+<app-header [titulo] = 'restaurant.name'></app-header>
+
+<ion-content>
+
+  <img src="{{prodURL}}/images/restaurants/{{restaurant.logo}}" class="logo-present">
+
+  <ion-item class="details-slot">
+    <ion-label>
+      <p>
+        <ion-icon name="location-sharp" slot="start"></ion-icon>
+        {{restaurant.address}}
+      </p>
+      <p>
+        <ion-icon name="bicycle-outline" slot='icon-only'></ion-icon>
+        Delivery Fee: ${{restaurant.deli_fee}}
+      </p>
+      <p>
+        {{restaurant.horario}}
+      </p>
+      <p *ngIf='dataService.currentRest.open == 0' class="text-close">
+        This restaurant is close
+      </p>
+    </ion-label>
+  </ion-item>
+  
+  <ion-list class="ion-padding">
+      <ion-item *ngFor='let item of productos | async'
+                routerLink='/product'
+                (click)="showDetails(item)"
+                routerLink='/product'>
+
+        <ion-thumbnail slot="start">
+          <ion-img src='../../assets/img/categories_default/cat0{{item.id_cat_o}}.svg' 
+                   *ngIf= "item.pic == ''"></ion-img>
+          <ion-img src='{{prodURL}}/images/products/{{item.pic}}' *ngIf= "item.pic != ''"></ion-img>
+        </ion-thumbnail>
+        <ion-label>
+          <h3>{{item.Nombre}}</h3>
+          <p class="ion-text-lowercase">{{item.descripcion}}</p>
+          <p>
+            <ion-chip color="success">
+              <ion-icon name="pricetags"></ion-icon>
+              <ion-label *ngIf='item.big == 0 && item.xl == 0'> ${{item.precio}}</ion-label>
+              <ion-label *ngIf='item.big > 0 && item.xl == 0'> ${{item.precio}} / ${{item.big}}</ion-label>
+              <ion-label *ngIf='item.xl > 0'> ${{item.precio}} / ${{item.big}} / ${{item.xl}}</ion-label>
+            </ion-chip>
+          </p>
+        </ion-label>
+        <ion-icon slot="end" name="add"></ion-icon>
+
+      </ion-item>
+  </ion-list>
+
+</ion-content>

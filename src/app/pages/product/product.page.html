@@ -1,0 +1,147 @@
+<app-header></app-header>
+
+<ion-content class="ion-padding">
+  <img src="../../assets/img/categories_default/cat0{{productosService.currentProduct.id_cat_o}}.svg"
+       *ngIf="productosService.currentProduct.pic == ''" 
+       class="aling-center-item">
+  <img src= "{{prodURL}}"
+       *ngIf="productosService.currentProduct.pic != ''" 
+       class="aling-center-item">
+
+  <ion-card-header>
+    <ion-card-title>{{productosService.currentProduct.Nombre}}</ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content class="ion-padding">
+    <ion-text>
+      <p class="ion-text-lowercase">{{productosService.currentProduct.descripcion}}</p>
+      <p class="top-20">
+        <ion-icon name='pricetags'></ion-icon> 
+        ${{productosService.currentProduct.precio + recargo}}
+      </p>
+      <!-- <p *ngIf='productosService.currentProduct.big > 0'>
+        ${{productosService.currentProduct.big}}
+      </p>
+      <p *ngIf='productosService.currentProduct.xl > 0'>
+        ${{productosService.currentProduct.xl}}
+      </p> -->
+    </ion-text>
+  </ion-card-content>
+
+  <form action="" #productInfoForm='ngForm' (ngSubmit)='onSubmitTemplate()'>
+
+  <!-- <ion-label class="ion-text-center">Qantity</ion-label> -->
+  <ion-item class="ion-justify-content-center" >
+    <ion-button (click)="setQuantity('remove')" fill='clear' color="dark" size='large' class="aling-center">
+      <ion-icon name="remove-circle-outline" ></ion-icon>
+    </ion-button>
+    
+    <p class="aling-center">{{cantidad}}</p>
+
+    <ion-button (click)="setQuantity('add')" fill='clear' color="dark" size='large' class="aling-center">
+        <ion-icon name="add-circle-outline"></ion-icon>
+    </ion-button>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Size</ion-label>
+    <ion-select placeholder="Individual" name='size' [(ngModel)]="this.size" (open)='chengesize()'>
+      <ion-select-option value="1">
+        Individual
+      </ion-select-option>
+      <ion-select-option value="2" 
+                         *ngIf='productosService.currentProduct.big > 0'>
+      Small Tray ( ${{productosService.currentProduct.big}} )
+    </ion-select-option>
+      <ion-select-option value="3"
+                         *ngIf='productosService.currentProduct.xl > 0'>
+      Large Tray ( ${{productosService.currentProduct.xl}} )
+    </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-segment (ionChange)="segmentChanged($event)"
+               class = 'top-20'
+               color='dark'>
+
+    <ion-segment-button value="extra">
+      <ion-label>Extras</ion-label>
+    </ion-segment-button>
+
+    <ion-segment-button value="side">
+      <ion-label>Sides</ion-label>
+    </ion-segment-button>
+
+    <ion-segment-button value="nos">
+      <ion-label>Quit</ion-label>
+    </ion-segment-button>
+    
+  </ion-segment>
+
+  <p *ngIf='extras.length > 0 && type == "extra"'>
+    <ion-chip *ngFor='let extra of extras; let i = index'>
+      <ion-label>{{extra.nombre}}</ion-label>
+      <ion-icon name="close-circle" (click)="quitIngredient(i, extra)"></ion-icon>
+    </ion-chip>
+  </p>
+
+  <p *ngIf='sides.length > 0 && type == "side"'>
+      <ion-chip *ngFor='let side of sides; let i = index'>
+        <ion-label>{{side.nombre}}</ion-label>
+        <ion-icon name="close-circle" (click)="quitIngredient(i, side)" ></ion-icon>
+      </ion-chip>
+  </p>
+
+  <p *ngIf='nos.length > 0 && type == "nos"'>
+      <ion-chip *ngFor='let no of nos; let i = index'>
+        <ion-label>{{no.nombre}}</ion-label>
+        <ion-icon name="close-circle" (click)="quitIngredient(i, no)"></ion-icon>
+      </ion-chip>
+  </p>
+
+  <!-- <p *ngIf='addme.length > 0'>
+    <ion-chip *ngFor='let ex of addme | filtro: type: "type"'>
+      <ion-label>{{ex.nombre}}</ion-label>
+    </ion-chip>
+  </p> -->
+
+  <ion-list *ngIf='type != ""'>
+
+    <ion-item  *ngFor='let ingredient of ingredientes | async | filtro: type: "type"'>
+
+      <ion-label>{{ingredient.nombre}}</ion-label>
+      <ion-label *ngIf='ingredient.valor > 0.0' 
+                 class="ion-text-end">
+        + {{ingredient.valor}}$
+      </ion-label>
+      <ion-button (click)="addIngredient(ingredient)" 
+                  fill="clear" 
+                  slot="end" 
+                  color="success">
+          <ion-icon slot="end" name="add"></ion-icon>
+      </ion-button>
+
+    </ion-item>
+
+  </ion-list>
+
+  
+
+  <ion-item >
+    <ion-label position='floating'>Add a coment for the cheff here</ion-label>
+    <ion-input type='string' name='comentarios' [(ngModel)]='notes'></ion-input>
+  </ion-item>
+
+  <ion-button expand='block' 
+              routerLink='/carrito' 
+              color="dark" 
+              class="top-20" 
+              (click)="addItem()"
+              type='submit'>
+      Add
+  </ion-button>
+  </form>
+
+</ion-content>
+
+<app-cart-fab></app-cart-fab>

@@ -1,0 +1,38 @@
+<app-header titulo="Order's history"></app-header>
+
+<ion-content class="ion-padding">
+
+  <ion-list>
+    <ion-list-header>
+      <ion-label>
+        <h2>Finished orders</h2>
+      </ion-label>
+    </ion-list-header>
+
+    <ion-card *ngFor="let order of ordersService.finishedOrders">
+      <ion-item color="light" (click)="showOrder(order.id_d)">
+        <ion-label>
+          <h3>Order No.{{order.id_d}}</h3>
+          <p>Total cost: {{order.total}}$</p>
+        </ion-label>
+      </ion-item>
+    </ion-card>
+
+    <ion-list-header>
+      <ion-label>
+        <h2>Cancelled orders</h2>
+      </ion-label>
+    </ion-list-header>
+
+    <ion-card *ngFor="let order of ordersService.cancelOrders">
+        <ion-item color="danger" (click)="showOrder(order.id_d)" routerLink='/step4'>
+          <ion-label>
+            <h3>Order No.{{order.id_d}}</h3>
+            <p>reason: {{order.Comentarios}}</p>
+          </ion-label>
+        </ion-item>
+      </ion-card>
+
+  </ion-list>
+
+</ion-content>

@@ -1,0 +1,32 @@
+[
+    {
+        "icon" : "person-circle-outline",
+        "name"  : "User page",
+        "redirectTo": "/user"
+    },
+    {
+        "icon" : "restaurant-outline",
+        "name"  : "Step 1: Products",
+        "redirectTo": "/step1"
+    },
+    {
+        "icon" : "location-outline",
+        "name"  : "Step 2: Confirm",
+        "redirectTo": "/step2"
+    },
+    {
+        "icon" : "square-outline",
+        "name"  : "Step 3: Checkout",
+        "redirectTo": "/step3"
+    },
+    {
+        "icon" : "cart-outline",
+        "name"  : "Cart",
+        "redirectTo": "/carrito"
+    },
+    {
+        "icon" : "fast-food-outline",
+        "name"  : "Product page",
+        "redirectTo": "/product"
+    }
+]

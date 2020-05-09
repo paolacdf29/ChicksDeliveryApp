@@ -1,0 +1,25 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+
+    <ng-template [ngIf]='titulo == "Home"' [ngIfElse]="backpls">
+    <ion-buttons slot="start">
+      <ion-menu-button color='success' menu='userMenu' ></ion-menu-button>
+    </ion-buttons>
+    </ng-template>
+
+    <ng-template #backpls>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref='/home'></ion-back-button>
+    </ion-buttons>
+    </ng-template>
+    
+    <ion-title class="ion-text-center">{{titulo}}</ion-title>
+
+    <ion-buttons slot="end" routerLink='/home'>
+        <ion-button color="success">
+            <ion-icon name="home-outline"></ion-icon>
+        </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>

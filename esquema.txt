@@ -1,0 +1,39 @@
+paginas
+
+    pagina principal
+        categorias
+        pedidos en curso
+        ver todo
+        make your chick plate
+
+
+    step1: pagina de productos
+        pagina de producto
+        carrito
+
+    step2: confirmation
+
+    step3: checkout
+        square
+
+    step4: status
+        status del pedido 
+
+    carrito
+
+    user
+
+componentes
+    carrito(boton flotante)
+
+    header
+        boton de atras
+        direccion
+
+    user menu
+        datos
+        direcciones
+        medios de pago
+        ultimos pedidos (ultimos 2)
+
+Servicios

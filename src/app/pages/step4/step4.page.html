@@ -1,0 +1,93 @@
+<app-header titulo='Order status'></app-header>
+
+
+<ion-content>
+
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+
+    <ion-card-header>
+        <ion-button fill='clear' color="success" routerLink='/details'>
+            <ion-icon slot="icon-only" name="add"></ion-icon>
+            <ion-card-subtitle>Details</ion-card-subtitle>
+        </ion-button>
+        <ion-card-title>Orden #{{ordersService.CurrentOrden.id_d}}</ion-card-title>
+    </ion-card-header>
+
+
+    <ion-text color="danger" *ngIf='ordersService.CurrentOrden.cancel'>
+        <h3  class="ion-padding">Ups this order has been cancelled by the restaurant :(</h3>
+        <p  class="ion-padding">The reason may be: {{ordersService.CurrentOrden.cancelMotive}}</p>
+    </ion-text>
+
+    <ion-list *ngIf='!ordersService.CurrentOrden.cancel'>
+
+        <section *ngIf="ordersService.CurrentOrden.active != 'inactive'">
+        <ion-item>
+            <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+            <p>Order comfirmed by the restaurant</p>
+            <ion-card-subtitle slot="end" 
+                                color="success">
+                                {{ordersService.CurrentOrden.active}}
+            </ion-card-subtitle>
+        </ion-item>
+        <ion-item><ion-progress-bar type="determinate" value='1.0' color="dark"></ion-progress-bar></ion-item>
+        </section>
+        <section *ngIf="ordersService.CurrentOrden.active == 'inactive'">
+        <ion-item>
+            <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+            <p>Waiting for confirmation from the restaurant</p>
+            <ion-card-subtitle slot="end" 
+                                color="dark">
+                                <ion-icon name="timer"></ion-icon>
+            </ion-card-subtitle>
+        </ion-item>
+        <ion-item><ion-progress-bar type="indeterminate" value='0.0' color="dark"></ion-progress-bar></ion-item>
+        </section>
+        
+
+        <section *ngIf='ordersService.CurrentOrden.stp2'>
+        <ion-item>
+            <ion-icon name="flame" slot="start"></ion-icon>
+            <p>Food ready</p>
+            <ion-card-subtitle slot="end" color='success'><ion-icon name="checkmark-circle-outline"></ion-icon></ion-card-subtitle>
+        </ion-item>
+        <ion-item><ion-progress-bar type="determinate" value='1' color="dark"></ion-progress-bar></ion-item>
+        </section>
+        <section *ngIf='!ordersService.CurrentOrden.stp2'>
+        <ion-item>
+            <ion-icon name="flame" slot="start"></ion-icon>
+            <p>Preparing the food</p>
+            <ion-card-subtitle slot="end"><ion-icon name="timer"></ion-icon></ion-card-subtitle>
+        </ion-item>
+        <ion-item><ion-progress-bar type="indeterminate" value='0.0' color="dark"></ion-progress-bar></ion-item>
+        </section>
+        
+
+        <section *ngIf='ordersService.CurrentOrden.completado != "unfinished"'>
+        <ion-item>
+            <ion-icon name="bicycle-outline" slot="start"></ion-icon>
+            <p>Food Arrived</p>
+            <ion-card-subtitle slot="end" color='success'>{{ordersService.CurrentOrden.completado}}</ion-card-subtitle>
+        </ion-item>
+        <ion-item><ion-progress-bar type="determinate" value='1' color="dark"></ion-progress-bar></ion-item>
+        </section>
+        <section *ngIf='ordersService.CurrentOrden.completado == "unfinished"'>
+        <ion-item>
+            <ion-icon name="bicycle-outline" slot="start"></ion-icon>
+            <p>Food on the way</p>
+            <ion-card-subtitle slot="end"><ion-icon name="timer"></ion-icon></ion-card-subtitle>
+        </ion-item>
+        <ion-item><ion-progress-bar type="indeterminate" value='0.0' color="dark"></ion-progress-bar></ion-item>
+        </section>
+
+        <ion-item disabled='ordersService.CurrentOrden.completado == "unfinished"'>
+            <ion-icon name="checkmark-done-circle" color="success"></ion-icon>
+            <ion-title>Order delivered</ion-title>
+        </ion-item>
+
+    </ion-list>
+
+
+</ion-content>

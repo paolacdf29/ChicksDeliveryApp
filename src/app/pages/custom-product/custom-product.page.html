@@ -1,0 +1,52 @@
+
+<app-header titulo='Custom Chick'></app-header>
+
+<ion-content>
+
+  <img src='../../assets/img/steak.svg' class="pstart">
+
+  <ion-segment (ionChange)="segmentChanged($event)"
+               class = 'top-20'
+               color='dark'>
+
+    <ion-segment-button value="{{stp.id_cc}}" *ngFor='let stp of steps | async'>
+      <ion-label>{{stp.nombre}}</ion-label>
+    </ion-segment-button>
+
+  </ion-segment>
+
+  <ion-list>
+
+    <ion-list-header *ngFor='let step of currentStep | async'>
+      <ion-text color="dark">
+        <h3>{{step.descripcion}}</h3>
+        <p>Min: {{step.min}} ingredient</p>
+        <p>Max: {{step.max}} ingredient</p>
+      </ion-text>
+    </ion-list-header>
+
+    <ion-item *ngFor='let ingredient of ingredient | async'>
+      <ion-label>
+        <h3>{{ingredient.nombre}}</h3>
+        <p><ion-chip color="success">
+            <ion-icon name="pricetags"></ion-icon>
+            <ion-label>{{ingredient.valor}}$</ion-label>
+          </ion-chip></p>
+      </ion-label>
+      <ion-checkbox color="light" 
+                    mode='ios' 
+                    (click)='elementClicked(ingredient)'></ion-checkbox>
+    </ion-item>
+
+  </ion-list>
+
+  <ion-item >
+    <ion-label position="floating" >Notes</ion-label>
+    <ion-input type="text" color="success"></ion-input>
+  </ion-item>
+
+  <ion-button (click)="sendme()" expand="block" color='dark'>
+      Ready!
+  </ion-button>
+
+</ion-content>

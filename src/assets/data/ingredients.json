@@ -1,0 +1,46 @@
+[
+    {
+        "nombre" : "Onion",
+        "type" : "extra"
+    },
+    {
+        "nombre" : "Cheese",
+        "type" : "extra"
+    },
+    {
+        "nombre" : "Tomato",
+        "type" : "extra"
+    },
+    {
+        "nombre" : "Bacon",
+        "type" : "extra"
+    },
+    {
+        "nombre" : "Avocado",
+        "type" : "extra"
+    },
+    {
+        "nombre" : "Spinach",
+        "type" : "nos"
+    },
+    {
+        "nombre" : "Beef",
+        "type" : "nos"
+    },
+    {
+        "nombre" : "Carrots",
+        "type" : "nos"
+    },
+    {
+        "nombre" : "Spicy Sauce",
+        "type" : "side"
+    },
+    {
+        "nombre" : "Chimichurry Sauce",
+        "type" : "side"
+    },
+    {
+        "nombre" : "Avocad",
+        "type" : "side"
+    }
+]

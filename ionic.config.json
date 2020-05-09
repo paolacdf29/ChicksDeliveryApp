@@ -1,5 +1,8 @@
 {
   "name": "ChicksDeliveryApp",
-  "integrations": {},
+  "integrations": {
+    "cordova": {},
+    "capacitor": {}
+  },
   "type": "angular"
 }

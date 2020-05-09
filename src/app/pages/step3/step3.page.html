@@ -1,0 +1,115 @@
+<app-header titulo = 'Payment'></app-header>
+
+<ion-content>
+    <ion-card>
+        <ion-list>
+            <ion-list-header>
+                <ion-card-title>Payment details</ion-card-title>
+            </ion-list-header>
+            <ion-item>
+                <p>Show support, leave a tip</p>
+                <ion-segment (ionChange)="tipme($event)" color="dark" mode='ios'>
+                    <ion-segment-button value="15">
+                        <ion-label>
+                        <p>15%</p>    
+                        <p>${{(this.cartService.totals.totPrice * 0.15).toFixed(2)}}</p>
+                    </ion-label>
+                    </ion-segment-button>
+                    <ion-segment-button value="18">
+                        <ion-label>
+                        <p>18%</p>
+                        <p>${{(this.cartService.totals.totPrice * 0.18).toFixed(2)}}</p>
+                        </ion-label>
+                    </ion-segment-button>
+                    <ion-segment-button value="20">
+                        <ion-label>
+                        <p>20%</p>
+                        <p>${{(this.cartService.totals.totPrice * 0.20).toFixed(2)}}</p>
+                        </ion-label>
+                    </ion-segment-button>
+                </ion-segment>
+            </ion-item>
+
+            <form #PaymentForm='ngForm' (ngSubmit)='openPayment()'></form>
+
+            <ion-item>
+                <ion-buttons slot="start">
+                    <ion-button routerLink='/carrito'>
+                            <ion-icon name="cart-outline" slot='icon-only'></ion-icon> 
+                     </ion-button>
+                </ion-buttons>
+                <ion-label> Subtotal </ion-label>
+                <p slot="end">${{cartService.totals.totPrice.toFixed(2)}}</p>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Delivery Fee</ion-label>
+                <p slot="end">${{dataService.currentRest.deli_fee.toFixed(2)}}</p>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Service Fee</ion-label>
+                <p slot="end">$2,25</p>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Tips</ion-label>
+                <p slot="end">${{cartService.tip.toFixed(2)}}</p>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Taxes</ion-label>
+                <p slot="end">${{cartService.tax.toFixed(2)}}</p>
+            </ion-item>
+
+            <ion-item>
+                <ion-buttons slot="start">
+                    <ion-button>
+                        <ion-icon name="cash-outline" slot='icon-only'></ion-icon>
+                    </ion-button>
+                </ion-buttons>
+                <h2>Total</h2>
+                <ion-label slot='end' class="ion-text-right">${{cartService.payment.toFixed(2)}}</ion-label>
+            </ion-item>
+        </ion-list>
+
+        
+        <ion-item >
+            <ion-buttons slot="start">
+                <ion-button routerLink='/promos'>
+                    <ion-icon name="wallet-outline" slot='icon-only'></ion-icon>
+                </ion-button>
+            </ion-buttons>
+            <ion-label>Payment options</ion-label>
+            <ion-select placeholder="Select One" [(ngModel)]='payment'>
+                    <ion-select-option value="cash">Cash</ion-select-option>
+                    <ion-select-option value="card">Credit Card</ion-select-option>
+            </ion-select>
+                
+        </ion-item>
+    </ion-card>
+
+    <ion-button expand='block' 
+                class='top-20' 
+                color="dark"
+                type='submit'
+                (click)="openPayment()"
+                *ngIf='cartService.totals.totItems > 0 && payment == "card"'
+                class="ion-padding">
+                <ion-icon name='cash-outline' slot='start'></ion-icon>
+                pay
+                <ion-icon name='card-outline' slot='end'></ion-icon>
+    </ion-button>
+
+    <ion-button expand='block' 
+                class='top-20' 
+                color="dark"
+                type='submit'
+                (click)="sendOrder()"
+                *ngIf='cartService.totals.totItems > 0 && payment == "cash"'
+                class="ion-padding">    
+                Send
+    </ion-button>
+
+</ion-content>
+

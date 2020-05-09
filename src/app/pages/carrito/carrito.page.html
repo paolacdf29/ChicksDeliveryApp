@@ -1,0 +1,52 @@
+<app-header titulo='Cart'></app-header>
+
+<ion-content>
+  <ion-list>
+    <ion-list-header>
+        <ion-card-title>Items</ion-card-title>
+    </ion-list-header>
+    
+    <ion-list-header class="bot-20">
+      <ion-toggle color="success" 
+                  name='show' 
+                  [(ngModel)]='this.details'> 
+      </ion-toggle>
+      Show details     
+    </ion-list-header>
+
+    <ion-item *ngFor='let item of items; let i = index'>
+      <ion-label>
+        <h2>{{item.Nombre}}</h2>
+        <section  *ngIf='details'>
+          <p *ngIf='item.comentario != ""'>Notes: {{item.comentario}}</p>
+          <p *ngIf='item.extras != ""'>Extra: {{item.extras}}</p>
+          <p *ngIf='item.sides != ""'>Side: {{item.sides}}</p>
+          <p *ngIf='item.dismiss != ""'>No: {{item.dismiss}}</p>
+          <br>
+          <p *ngIf='item.recargo > 0'>+ {{item.recargo}}$</p>
+          <p><ion-icon slot="start" name="pricetags-sharp"></ion-icon> {{item.precio}}$ each</p>
+        </section>
+      </ion-label>
+      <ion-badge color="light">{{item.cantidad}}</ion-badge>
+      <ion-button fill='clear'
+                  (click)="delItem(i)"
+                  color='dark'>
+                  <ion-icon name="trash-outline" slot="end"></ion-icon>          
+      </ion-button>
+    </ion-item>
+
+    <ion-item>
+      <ion-icon slot="start" name="pricetags"></ion-icon>
+      <ion-label>Total cost</ion-label>
+      <ion-label slot="end"class="ion-text-end">{{cartService.totals.totPrice}}$</ion-label>
+    </ion-item>
+  </ion-list>
+  
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col size="6" *ngIf='this.dataService.currentRest'><ion-button expand='full' color="dark" routerLink='/restaurant'>Add more</ion-button></ion-col>
+      <ion-col size="6" *ngIf='!this.dataService.currentRest'><ion-button expand='full' color="dark" routerLink='/step1'>Add more</ion-button></ion-col>
+      <ion-col size="6"><ion-button expand='full' color="dark" routerLink='/step2'>Checkout</ion-button></ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

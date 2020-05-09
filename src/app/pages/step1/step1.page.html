@@ -1,0 +1,65 @@
+<ion-header class="ion-no-border">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/home" ></ion-back-button>
+        </ion-buttons>
+
+        <ion-searchbar (ionChange)='buscar( $event )' mode='ios' class="search-bar"></ion-searchbar>
+
+        <ion-buttons slot="end">
+            <ion-button routerLink='/home'>
+                <ion-icon slot="end" name="home-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+    <ion-grid fixed>
+        <ion-row>
+            <ion-col size="6" size-md='3' *ngFor='let item of productos | async | filtro: textoBusqueda: "Nombre" | filtroNumber: currentCategorie: "id_cat"'>    
+            <ion-card class="product-card">
+
+                <ion-img src='../../assets/img/categories_default/cat0{{item.id_cat_o}}.svg' 
+                         *ngIf= "item.pic == ''" 
+                         class="product-img"></ion-img>
+
+                <ion-img src='{{prodURL}}/images/products/{{item.pic}}' 
+                         *ngIf= "item.pic != ''" 
+                         class="product-img"></ion-img>
+
+                <ion-label >
+                    <h2 class="product-name ion-padding">{{item.Nombre}}</h2>
+                    <p *ngIf='item.id_cat_o != 7' class="ion-padding">
+                        <ion-chip color="success">
+                            <ion-icon name="pricetags"></ion-icon>
+                            <ion-label *ngIf='item.big == 0 && item.xl == 0'> ${{item.precio}}</ion-label>
+                            <ion-label *ngIf='item.big > 0 && item.xl == 0'> ${{item.precio}} / ${{item.big}}</ion-label>
+                            <ion-label *ngIf='item.xl > 0'> ${{item.precio}} / ${{item.big}} / ${{item.xl}}</ion-label>
+                        </ion-chip>    
+                    </p>
+                </ion-label>
+
+                <ion-button color="success"
+                            (click)="onClick(item)" 
+                            expand='block'>Buy</ion-button>
+            </ion-card>
+            </ion-col>
+        </ion-row>
+
+        <!-- <ion-text *ngIf='productos'>
+            <h3>Ups we could not find any products</h3>
+        </ion-text> -->
+
+    </ion-grid>
+
+</ion-content>
+
+<app-cart-fab></app-cart-fab>
+
+<ion-footer>
+    <ion-button expand='block' routerLink='/step2' color="dark" class="top-20" >
+        Ready!
+    </ion-button>
+</ion-footer>

@@ -1,0 +1,29 @@
+<app-header titulo=''></app-header>
+
+<ion-content class="ion-padding">
+
+  <form #setPasswordForm='ngForm' (ngSubmit)='changePass(setPasswordForm)' >
+  <ion-list class="top-100">
+    <ion-item>
+      <ion-label position='floating'>Current password</ion-label>
+      <ion-input type="password" 
+                 required minlength='3'
+                 name='pass'
+                 [(ngModel)]="passwords.current"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position='floating'>New password</ion-label>
+      <ion-input type="password" 
+                 required minlength='3'
+                 name='newpass'
+                 [(ngModel)]="passwords.new"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <ion-button  color="success" type='submit' class="top-20" expand='block'>
+    Ready!
+  </ion-button>
+
+  </form>
+</ion-content>
