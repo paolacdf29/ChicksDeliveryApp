@@ -34,9 +34,7 @@
                     <p *ngIf='item.id_cat_o != 7' class="ion-padding">
                         <ion-chip color="success">
                             <ion-icon name="pricetags"></ion-icon>
-                            <ion-label *ngIf='item.big == 0 && item.xl == 0'> ${{item.precio}}</ion-label>
-                            <ion-label *ngIf='item.big > 0 && item.xl == 0'> ${{item.precio}} / ${{item.big}}</ion-label>
-                            <ion-label *ngIf='item.xl > 0'> ${{item.precio}} / ${{item.big}} / ${{item.xl}}</ion-label>
+                            <ion-label> ${{item.precio}}</ion-label>
                         </ion-chip>    
                     </p>
                 </ion-label>

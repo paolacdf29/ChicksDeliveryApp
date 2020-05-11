@@ -16,11 +16,12 @@
         <ion-slide  *ngFor='let cat of categories | async'
                     routerLink='/step1/{{cat.id_cat}}'
                     class="cat-slides">
+
             <p>
-            <ion-avatar>
-                <ion-img src='../../assets/img/categories_default/cat0{{cat.id_cat}}.svg'></ion-img>
-            </ion-avatar>
-            <ion-label position="stacked" class="ion-text-center">{{cat.nombre_cat}}</ion-label>
+                <ion-thumbnail class="img-center">
+                    <ion-img src='../../assets/img/categories_default/cat0{{cat.id_cat}}.svg'></ion-img>
+                </ion-thumbnail>
+                <ion-label position="stacked" class="ion-text-center">{{cat.nombre_cat}}</ion-label>
             </p>
         </ion-slide>
     </ion-slides>
