@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { NavController } from '@ionic/angular';
+import { NavController, ToastController, AlertController } from '@ionic/angular';
 
 import { environment } from '../../environments/environment';
-import { items } from '../interfaces/interfaces';
+import { precompra } from '../interfaces/interfaces';
 import { DataService } from './data.service';
 import { SessionService } from './session.service';
 import { ProductosService } from './productos.service';
@@ -18,37 +18,77 @@ const URL = environment.url;
 
 export class CartService {
 
-  items : items[] = [];
-  extrainfo : string;
+  items : precompra[] = []; //productos agregados al carrito
+  extrainfo : string; //Comentarios generales
   totals = {
     totItems : 0,
     totPrice : 0
-  }
-  subtotal: number;
-  tip: number = 0; 
-  tax: number;
-  payment: number;
+  } //Total de items y total de precios(suma del valor de todos los items)
+  subtotal: number; 
+  tip: number = 0; //Propinas
+  tax: number; // Impuestos
+  payment: number; //subtotal + tips + tax
+  alerta: string;
+  serviceFee: number = 0;
 
   constructor(private sessionService: SessionService,
               private http: HttpClient,
               private navCtrl: NavController,
               private dataService: DataService,
               private productosService: ProductosService,
-              private ordersService: OrdersService){
+              private ordersService: OrdersService,
+              private toastCtrl: ToastController,
+              private alertCtrl: AlertController){
 
   }
 
-  addToCart(product) {
+  //---------------operaciones basicas del carrito-------------------
+  //agrega un item del carrito
+  addToCart(product: precompra) {
     this.totals.totItems += product.cantidad;
-    this.totals.totPrice += (parseFloat(product.precio) + parseFloat(product.recargo))*parseFloat(product.cantidad);
+    this.totals.totPrice += (product.price + product.recargo)*product.cantidad;
     this.items.push(product);
     this.productosService.currentProduct = null;
   }
 
+  //elimina un item del carrito
+  deleteItem(index: number) {
+    let delitem = this.items[index];
+    this.totals.totItems -= delitem.cantidad;
+    this.totals.totPrice -= (delitem.price + delitem.recargo)*delitem.cantidad;
+    this.items.splice(index, 1);
+    return this.items;
+  }
+
+  //Configura el comentario general
+  setExtraInfo(info){
+    this.extrainfo = info.delivertype + ': ' + info.timeSet;
+
+    if(info.comentarios != ''){
+      this.extrainfo += ', Comments: ' + info.comentarios;
+    }
+
+    if(this.sessionService.islogged()){
+      if(info.changeAddress){
+        this.extrainfo += ', New address: ' + info.newAddress;
+      }
+    }else{
+      this.extrainfo += `, Email: ${info.newMail}, Phone: ${info.newPhone}, Client: ${info.newUser}, Address: ${info.newAddress}`;
+
+    }
+  }
+
+  //Devuelve los items
   getItems() {
     return this.items;
   }
 
+  //Devuelve el total
+  gettotal(){
+    return this.totals.totPrice;
+  }
+
+  //Reinicia los valores de las variables
   clearCart() {
     this.items = [];
     this.totals.totItems = 0;
@@ -60,77 +100,52 @@ export class CartService {
     return this.items;
   }
 
-  deleteItem(index: number) {
-    let delitem = this.items[index];
-    this.totals.totItems -= delitem.cantidad;
-    this.totals.totPrice -= (delitem.precio + delitem.recargo)*delitem.cantidad;
-    this.items.splice(index, 1);
-    return this.items;
+  //--------------pago y envio del contenido del carrito al backend-----------------
+
+  //Suma los tax, tips, fees al total
+  totalizar(){
+    this.subtotal = this.totals.totPrice + this.dataService.currentRest.deli_fee + this.serviceFee;
+    this.tax = this.subtotal * 0.07;
+    this.payment = this.subtotal + this.tax +this.tip;
   }
 
-  gettotal(){
-    return this.totals.totPrice;
-  }
+  //Solicita un pago con tarjeta de credito (square payments)
+  sqPayCall(nonce: string){
 
-  setExtraInfo(info, address: string){
-    this.extrainfo = info.delivertype + ': ' + info.timeSet;
+    return new Promise(resolve =>{
+      
+      const headers = new HttpHeaders({
+        "Accept": "application/json",
+        'Content-Type': 'application/json'
+      });
+      //this.totalizar();
+      const body={
+        nonce: nonce,
+        payamount: this.payment,
+      }
+  
+      this.http.post(URL + '/api/sqPay/process-payment', body, {headers})
+          .subscribe(respuesta =>{
+            if (respuesta['title'] == 'Payment Successful'){
+              console.log(respuesta['result']); //este es el id de la transaccion
+              this.checkout(respuesta['result']); //Se solicita crear la orden
+              this.presentToast('Payment complete successfully') //Yayyy
+              resolve('true')
+            }else if (respuesta['title'] == 'Payment Failure'){
+              console.log(respuesta['result']);
+              this.alerta = respuesta['result'];
+              this.presentToast('Payment failed to complete!')
+              resolve('false')
+            }
+          })
 
-    if(info.comentarios != ''){
-      this.extrainfo += ', Comments: ' + info.comentarios;
-
-    }
-
-    if(info.changeAddress){
-      this.extrainfo += ', New address: ' + address;
-
-    }
-
-    console.log(this.extrainfo)
-  }
-
-  sendItem(oid: number, item: items){
-
-
-    const headers = new HttpHeaders({
-      "token" : this.sessionService.token
-    });
-
-    let body = {
-      id_order: oid,
-      id_p: item.id_P,
-      comentario: item.comentario,
-      dismiss: item.dismiss,
-      extras: item.extras,
-      sides: item.sides,
-      cantidad: item.cantidad,
-      recargo: item.recargo
-    }
-
-    this.http.post(URL + '/api/product', body, {headers})
-        .subscribe(respuesta =>{
-          if(respuesta['ok']){
-            console.log('se ha guardado el item exitosamente');
-          }else{
-            console.log(respuesta['error'])
-          }
-        })
+    })
 
   }
 
-  sendItems(oid: number){
-
-    for(let item of this.items){
-      this.sendItem(oid, item);
-    }
-    this.ordersService.getOrder(oid);
-    this.navCtrl.navigateForward('/step4');
-    this.clearCart();
-  }
-
+   //Crea la orden y solicita añadir los items a la orden
   checkout(paymentType: string){
-
     return new Promise(resolve=>{
-
       const headers = new HttpHeaders({
         "token" : this.sessionService.token
       });
@@ -144,8 +159,21 @@ export class CartService {
         tip: this.tip
       }
 
-
-      this.http.post( URL + '/api/step3/newdeli', body, {headers})
+      if(this.sessionService.islogged()){
+        this.http.post( URL + '/api/step3/newdeli', body, {headers})
+            .subscribe(respuesta=>{
+              if(respuesta['ok']){
+                this.sendItems(respuesta['id_d']);
+                this.presentAlert(`Your order has benn successfully created, the id number is${respuesta['id_d']} use this number to track the order or ask for the status to the restaurant`)
+                console.log('id de la orden : '+ respuesta['id_d']);
+                resolve(respuesta['id_d'])
+              }else{
+                console.log(respuesta['error'])
+                resolve('error')
+              }
+            })        
+      }else{
+        this.http.post(URL + '/api/step3/faker/newdeli', body)
           .subscribe(respuesta=>{
             if(respuesta['ok']){
               this.sendItems(respuesta['id_d']);
@@ -155,72 +183,59 @@ export class CartService {
               console.log(respuesta['error'])
               resolve('error')
             }
-          })
-
-    })
-  }
-
-  sqPayCall(nonce){
-
-    return new Promise(resolve =>{
-      
-      const headers = new HttpHeaders({
-        "Accept": "application/json",
-        'Content-Type': 'application/json'
-      });
-  
-      const body={
-        nonce: nonce,
-        money: this.totals.totPrice
+          })        
       }
-  
-      this.http.post(URL + '/api/sqPay/process-payment', body, {headers})
-          .subscribe(respuesta =>{
-            if (respuesta['title'] == 'Payment Successful'){
-              console.log(respuesta['result']);
-              resolve('true')
-            }else if (respuesta['title'] == 'Payment Failure'){
-              console.log(respuesta['result']);
-              resolve('false')
-            }
-          })
+
 
     })
+  }
+
+  //itera sobre la lista de productos y solicita añadirlos
+  sendItems(oid: number){
+    for(let item of this.items){
+      item.id_order = oid
+      this.sendItem(item);
+    }
+    if(this.sessionService.islogged()){
+      this.ordersService.getOrder(oid);
+    }else{
+      this.ordersService.getOrdersimple(oid);
+    }
+    this.navCtrl.navigateForward('/step4');
+    this.clearCart();
+  }
+
+  //añade un producto a la orden
+  sendItem(item: precompra){
+    this.http.post(URL + '/api/product', item)
+        .subscribe(respuesta =>{
+          if(respuesta['ok']){
+            console.log('se ha guardado el item exitosamente');
+          }else{
+            console.log(respuesta['error'])
+          }
+        })
 
   }
 
-
-  totalizar(){
-    this.subtotal = this.totals.totPrice + this.dataService.currentRest.deli_fee + 2.25;
-    this.tax = this.subtotal * 0.07;
-    this.payment = this.subtotal + this.tax +this.tip;
-  }
-
-  sendSqPayment(){
-    return new Promise(resolve =>{
-      
-      const headers = new HttpHeaders({
-        "token": this.sessionService.token
-      });
-  
-      const body={
-        payamount: this.totals.totPrice
-      }
-  
-      this.http.post(URL + '/api/sqPay/request-payment', body, {headers})
-          .subscribe(respuesta =>{
-            if (respuesta['ok']){
-              console.log('monto enviado satisfactoriamente');
-              resolve('true')
-            }else{
-              console.log('ups algo salio mal');
-              resolve('false')
-            }
-          })
-
+  async presentToast(msj){
+    const toast = await this.toastCtrl.create({
+      message: msj,
+      position: "middle",
+      duration: 1000
     })
-    
+
+    toast.present();
   }
 
+  async presentAlert(msj){
+    const alert = await this.alertCtrl.create({
+      header: 'Success!',
+      message: msj,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
 
 }

@@ -9,11 +9,16 @@ import { OrdersService } from 'src/app/services/orders.service';
 })
 export class Step4Page implements OnInit {
   
+  details: boolean = true; //permite ver los detalles o no dependiendo si es un user logeado
+
   constructor(private activeRoute : ActivatedRoute,
               public ordersService: OrdersService) { }
 
   ngOnInit() {
-    const id_orden = this.activeRoute.snapshot.params.oid
+    const setting = this.activeRoute.snapshot.params.details
+    if(setting == 'nodetails'){
+      this.details = false;
+    }
   }
 
   doRefresh(event) {

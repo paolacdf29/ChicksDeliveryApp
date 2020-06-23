@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./promos.page.scss'],
 })
 export class PromosPage implements OnInit {
-
+  //esta pagina no hace nada por ahora, en un futuro es para obtener y usar cupones de promocion
   constructor() { }
 
   ngOnInit() {

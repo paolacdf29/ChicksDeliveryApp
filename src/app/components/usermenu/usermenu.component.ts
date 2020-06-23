@@ -8,11 +8,12 @@ import { SessionService } from '../../services/session.service';
 })
 export class UsermenuComponent implements OnInit {
 
+  logged: boolean;
 
-  constructor(private sessionService: SessionService) { }
+  constructor(public sessionService: SessionService) { }
 
   ngOnInit() {
-    
+    this.sessionService.islogged();
   }
 
   plsLogOut(){

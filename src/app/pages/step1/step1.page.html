@@ -24,7 +24,6 @@
                 <ion-img src='../../assets/img/categories_default/cat0{{item.id_cat_o}}.svg' 
                          *ngIf= "item.pic == ''" 
                          class="product-img"></ion-img>
-
                 <ion-img src='{{prodURL}}/images/products/{{item.pic}}' 
                          *ngIf= "item.pic != ''" 
                          class="product-img"></ion-img>
@@ -32,14 +31,15 @@
                 <ion-label >
                     <h2 class="product-name ion-padding">{{item.Nombre}}</h2>
                     <p *ngIf='item.id_cat_o != 7' class="ion-padding">
-                        <ion-chip color="success">
+                        <ion-chip color="secondary">
                             <ion-icon name="pricetags"></ion-icon>
                             <ion-label> ${{item.precio}}</ion-label>
                         </ion-chip>    
                     </p>
                 </ion-label>
 
-                <ion-button color="success"
+                <ion-button color="secondary"
+                            shape='round'
                             (click)="onClick(item)" 
                             expand='block'>Buy</ion-button>
             </ion-card>
@@ -57,7 +57,11 @@
 <app-cart-fab></app-cart-fab>
 
 <ion-footer>
-    <ion-button expand='block' routerLink='/step2' color="dark" class="top-20" >
+    <ion-button expand='block' 
+                routerLink='/step2' 
+                color="dark" 
+                shape='round'
+                class="top-20" >
         Ready!
     </ion-button>
 </ion-footer>

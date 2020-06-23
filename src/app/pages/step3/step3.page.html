@@ -6,6 +6,8 @@
             <ion-list-header>
                 <ion-card-title>Payment details</ion-card-title>
             </ion-list-header>
+
+            <!-- opciones de propina -->
             <ion-item>
                 <p>Show support, leave a tip</p>
                 <ion-segment (ionChange)="tipme($event)" color="dark" mode='ios'>
@@ -31,7 +33,8 @@
             </ion-item>
 
             <form #PaymentForm='ngForm' (ngSubmit)='openPayment()'></form>
-
+            
+            <!-- detalles de pago -->
             <ion-item>
                 <ion-buttons slot="start">
                     <ion-button routerLink='/carrito'>
@@ -49,7 +52,7 @@
 
             <ion-item>
                 <ion-label>Service Fee</ion-label>
-                <p slot="end">$2,25</p>
+                <p slot="end">{{cartService.serviceFee}}</p>
             </ion-item>
 
             <ion-item>
@@ -73,8 +76,8 @@
             </ion-item>
         </ion-list>
 
-        
-        <ion-item >
+        <!-- opciones de pago (si no es un user logeado solo con tarjeta de credito) -->
+        <ion-item>
             <ion-buttons slot="start">
                 <ion-button routerLink='/promos'>
                     <ion-icon name="wallet-outline" slot='icon-only'></ion-icon>
@@ -89,25 +92,29 @@
         </ion-item>
     </ion-card>
 
+    <!-- boton para pagar con la tarjeta de credito -->
     <ion-button expand='block' 
                 class='top-20' 
                 color="dark"
                 type='submit'
                 (click)="openPayment()"
                 *ngIf='cartService.totals.totItems > 0 && payment == "card"'
-                class="ion-padding">
+                class="ion-padding"
+                shape='round'>
                 <ion-icon name='cash-outline' slot='start'></ion-icon>
                 pay
                 <ion-icon name='card-outline' slot='end'></ion-icon>
     </ion-button>
 
+    <!-- boton para pago en efectivo -->
     <ion-button expand='block' 
                 class='top-20' 
                 color="dark"
                 type='submit'
                 (click)="sendOrder()"
                 *ngIf='cartService.totals.totItems > 0 && payment == "cash"'
-                class="ion-padding">    
+                class="ion-padding"
+                shape='round'>    
                 Send
     </ion-button>
 

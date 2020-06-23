@@ -23,7 +23,6 @@ export class PasspagePage implements OnInit {
     if(form.valid){
       this.sessionService.changepass(this.passwords);
     }
-
   }
 
 }

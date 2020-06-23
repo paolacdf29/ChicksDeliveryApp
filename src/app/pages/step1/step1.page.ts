@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
+import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { items } from '../../interfaces/interfaces';
 import { DataService } from '../../services/data.service';
 import { ProductosService } from '../../services/productos.service';
 
-const URL = environment.url;
 
 @Component({
   selector: 'app-step1',
@@ -17,10 +16,10 @@ const URL = environment.url;
 })
 export class Step1Page implements OnInit {
 
-  productos: Observable<items[]>;
-  textoBusqueda: string = '';
-  currentCategorie: number = 0;
-  prodURL: string;
+  productos: Observable<items[]>; //lista de productos
+  textoBusqueda: string = ''; //texto de busqueda
+  currentCategorie: number = 0; //Categoria de los productos
+  prodURL: string; //URL para las imagenes
 
   constructor( public dataService : DataService,
                public productosService: ProductosService,
@@ -34,20 +33,15 @@ export class Step1Page implements OnInit {
     }else{
       this.productos = this.productosService.getProducts();    
     }
-
-    this.prodURL = URL;
+    this.prodURL = environment.url;;
   }
 
-  escuchaclick( id_p : number ){
-    console.log('Click en: ', id_p)
-
-  }
-
+  //Filtra los productos de acuerdo con el texto de busqueda
   buscar( event ){
     this.textoBusqueda = event.detail.value
-
   }
 
+  //configura el restaurante actual y producto actual y luego envia a la pagina del producto
   onClick( data: items ){
     this.dataService.setRestByProduct(data);
     this.productosService.currentProduct = data;

@@ -11,7 +11,6 @@ import { PaymentModalPage } from './payment-modal.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    PaymentModalPage
   ],
   exports: [
     PaymentModalPage

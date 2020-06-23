@@ -9,6 +9,7 @@ import { Step3PageRoutingModule } from './step3-routing.module';
 import { Step3Page } from './step3.page';
 import { ComponentsModule } from '../../components/components.module';
 import { PaymentModalPage } from '../payment-modal/payment-modal.page';
+import { PaymentModalPageModule } from '../payment-modal/payment-modal.module';
 
 @NgModule({
   entryComponents: [
@@ -20,11 +21,10 @@ import { PaymentModalPage } from '../payment-modal/payment-modal.page';
     IonicModule,
     Step3PageRoutingModule,
     ComponentsModule,
+    PaymentModalPageModule
   ],
   declarations: [
     Step3Page,
-    PaymentModalPage,
-
   ]
 })
 export class Step3PageModule {}

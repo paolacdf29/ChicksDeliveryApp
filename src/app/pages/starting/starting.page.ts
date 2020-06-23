@@ -8,7 +8,7 @@ import { NavController } from '@ionic/angular';
   styleUrls: ['./starting.page.scss'],
 })
 export class StartingPage implements OnInit {
-
+  //Esta es solo una pagina que se asegura de cargar el usuario y los servicios
   constructor(private sessionService: SessionService,
               private navCtrl: NavController) { }
 

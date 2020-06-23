@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CartService } from '../../services/cart.service';
 import { DataService } from '../../services/data.service';
 import { items } from 'src/app/interfaces/interfaces';
+import { precompra } from '../../interfaces/interfaces';
 
 @Component({
   selector: 'app-carrito',
@@ -10,7 +11,7 @@ import { items } from 'src/app/interfaces/interfaces';
 })
 export class CarritoPage implements OnInit {
 
-  items: items[];
+  items: precompra[];
   details = false;
 
   constructor( public cartService: CartService,
@@ -20,6 +21,7 @@ export class CarritoPage implements OnInit {
     this.items = this.cartService.items;
   }
 
+  //elimina un producto del carrito
   delItem(i){
     this.cartService.deleteItem(i);
   }

@@ -16,14 +16,21 @@ export interface items{
     id_cat_o: number,
     pic: string,
     precio: number,
-    cantidad: number,
-    sides?: string,
-    extras?: string,
-    dismiss?: string,
-    comentario?: string,
-    recargo?: number,
     big: number,
     xl: number,
+}
+
+export interface precompra{
+    id_order?: number,
+    id_p: number,
+    nombre: string,
+    comentario?: string,
+    cantidad: number,
+    dismiss?: string,
+    extras?: string,
+    sides?: string,
+    recargo?: number,
+    price: number
 }
 
 export interface ingredient {

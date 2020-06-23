@@ -10,8 +10,8 @@
             <ion-card-title>User Info</ion-card-title>
             <ion-button (click)="enableEdit()" fill='clear' size='small'>
                     <ion-icon name="create-outline"></ion-icon>
-        </ion-button>
-    </ion-card-header>
+            </ion-button>
+        </ion-card-header>
     
         <ion-item>
             <ion-label >Name:{{user.Nombre_client}} {{user.Apellido_client}}</ion-label>
@@ -41,20 +41,22 @@
                        required></ion-input>
         </ion-item>
     
-        <ion-item>
+        <!-- <ion-item>
             <ion-label>Rank: Cliente frecuente</ion-label>
             <ion-icon name="star-sharp"></ion-icon>
             <ion-icon name="star-sharp"></ion-icon>
             <ion-icon name="star-sharp"></ion-icon>
             <ion-icon name="star-sharp"></ion-icon>
             <ion-icon name="star-sharp"></ion-icon>
-        </ion-item>
+        </ion-item> -->
+
         <ion-button expand="block" type='submit' *ngIf='edit'>
             Save
         </ion-button>
     </form>
     </ion-list>
 
+    <!-- boton para cambiar la contraseña -->
     <ion-button expand="block" fill="clear" routerLink='/passpage' color="success">
         Change Password
     </ion-button>

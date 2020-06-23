@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { ToastController, NavController } from '@ionic/angular';
+import { Observable } from 'rxjs';
 
-import { ingredient, customStep } from '../../interfaces/interfaces';
+import { ingredient, customStep, precompra } from '../../interfaces/interfaces';
 import { CartService } from '../../services/cart.service';
 import { ProductosService } from '../../services/productos.service';
 
@@ -15,12 +15,14 @@ import { ProductosService } from '../../services/productos.service';
 
 export class CustomProductPage implements OnInit {
   
-  steps: Observable<customStep[]>;
-  currentStep: Observable<customStep[]>;
+  steps: Observable<customStep[]>; //pasos o tipos de ingredientes
+  currentStep: Observable<customStep[]>; // paso seleccionado
 
-  ingredient: Observable<ingredient[]>;
-  selectedIng = [];
-  id_p: number;
+  ingredient: Observable<ingredient[]>; //ingredientes correspondiente al paso
+  selectedIng = []; //ingredientes que el cliente ha seleccionado para el plato
+
+  id_p: number; //id del producto
+  notes: string; //comentario general
 
   constructor(private Route: ActivatedRoute,
               private cartService: CartService,
@@ -33,12 +35,16 @@ export class CustomProductPage implements OnInit {
     this.steps =  this.productosService.getCustomSteps(this.id_p);
   }
 
+  //se activa cuando selecciona un paso solicitando los ingredientes correspondientes al mismo
   segmentChanged(event){
+    //solicitud de los ingredientes
     const code = event.detail.value + this.productosService.currentProduct.id_P
     this.ingredient = this.productosService.getCustomIngredients(code);
+    //solicutud de los detalles del paso
     this.currentStep = this.productosService.getCustomStep(event.detail.value);
   }
 
+  //agrega/quita un ingrediente de la lista al seleccionar/deseleccionar el checkbox
   elementClicked(ingredient: ingredient){
     const index = this.selectedIng.indexOf(ingredient);
     if(index > -1){
@@ -48,26 +54,16 @@ export class CustomProductPage implements OnInit {
     }
   }
 
-  async presentToast(msj : string) {
-    const toast = await this.toastCtrl.create({
-      message: msj,
-      duration: 1000
-    });
-    toast.present();
-  }
-
+  // convierte la lista de ingredientes a string y la agrega a los comentarios
   getNote(){
-    let note = ''
     if(this.selectedIng.length > 0){
       for(let item of this.selectedIng){
-        note += item.nombre + ', '
+        this.notes += item.nombre + ', '
       }
     }
-
-    return note
-
   }
 
+  // devuelve la suma del costo de los ingredientes seleccionados
   getRecargo(){
     let val = 0.0;
     if(this.selectedIng.length > 0){
@@ -79,16 +75,35 @@ export class CustomProductPage implements OnInit {
     return val;
   }
 
+  //limpia los valores de la lista y el comentario
   clean(){
     this.selectedIng = [];
+    this.notes = ''
   }
 
+  //agrega el item al carrito
   sendme(){
-    this.productosService.updateCurrentProduct(1, this.getNote(), '', '', '', this.getRecargo());
-    this.cartService.addToCart(this.productosService.currentProduct);
+    this.getNote();
+    const item: precompra = {
+      id_p: this.id_p,
+      nombre: this.productosService.currentProduct.Nombre,
+      comentario: this.notes,
+      cantidad: 1,
+      recargo: 0,
+      price: this.getRecargo()
+    }
+    this.cartService.addToCart(item);
     this.clean();
     this.presentToast('Your item has been added to the cart.');
     this.navCtrl.navigateForward('/carrito')
+  }
+
+  async presentToast(msj : string) {
+    const toast = await this.toastCtrl.create({
+      message: msj,
+      duration: 1000
+    });
+    toast.present();
   }
 
 }

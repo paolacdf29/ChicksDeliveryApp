@@ -2,11 +2,9 @@
 
 
 <ion-content >
-    <ion-item *ngIf='!users'>
-        <ion-card-subtitle color="danger">You must be logged to proceed</ion-card-subtitle>    
-    </ion-item>
     
     <form #userinfoform='ngForm' (ngSubmit)='onSubmitTemplate()'>
+        <!-- Seleccion de delivery o takeaway (delivery por defecto) -->
         <ion-list>
             <ion-radio-group [(ngModel)]='orderInfo.delivertype' required name='place'>
                 <ion-list-header color="dark">
@@ -21,7 +19,8 @@
                     <ion-radio slot="start" value="TakeAway"></ion-radio>
                 </ion-item>
             </ion-radio-group>
-    
+
+        <!-- seleccion de hora del pedido (as soon as possible por defecto) -->
             <ion-list-header color='dark'>
                 <ion-label>When</ion-label>
             </ion-list-header>
@@ -39,8 +38,8 @@
                     <ion-select-option value="20hs">20:00 PM</ion-select-option>
                 </ion-select>
             </ion-item>
-    
             
+            <!-- Solicitar y/o confirmar informacion del envio -->
             <section *ngFor='let user of users'>
                 <ion-list-header color='dark'>
                     <ion-label>Comfirm your personal info</ion-label>
@@ -53,7 +52,7 @@
 
                 <ion-item *ngIf='orderInfo.changeAddress'>
                     <ion-label position='floating'>Address:</ion-label>
-                    <ion-input type='string' [(ngModel)]='newAddress' name='newaddres'></ion-input>
+                    <ion-input type='string' [(ngModel)]='orderInfo.newAddress' name='newaddres'></ion-input>
                 </ion-item>
     
                 <ion-item>
@@ -61,13 +60,54 @@
                     <ion-toggle (ionChange)='changeMyAddress()'></ion-toggle>
                 </ion-item>    
 
-                <ion-item>
+                <ion-item >
                     <ion-label position='floating'>Phone number:</ion-label>
                     <ion-input type='number' [value]='user.Telefono_client' readonly='true'></ion-input>
+                </ion-item>  
+ 
+            </section>
+
+            <section *ngIf='!logged'>
+                <ion-list-header color='dark'>
+                    <ion-label>Comfirm your personal info</ion-label>
+                </ion-list-header>
+                
+                <ion-item>
+                    <ion-label position='floating'>Name of the receiver:</ion-label>
+                    <ion-input type='string' 
+                               [(ngModel)]="orderInfo.newUser" 
+                               name='newuser'
+                               inputmode='text'></ion-input>
+                </ion-item>
+
+                <ion-item>
+                    <ion-label position='floating'>Address:</ion-label>
+                    <ion-input type='string' 
+                               [(ngModel)]='orderInfo.newAddress' 
+                               name='newaddres'
+                               inputmode='text'></ion-input>
+                </ion-item>
+
+                <ion-item>
+                    <ion-label position='floating'>Phone number:</ion-label>
+                    <ion-input type='number' 
+                               [(ngModel)]="orderInfo.newPhone" 
+                               name='newtlf'
+                               inputmode='tel'
+                               minlength='7'></ion-input>
+                </ion-item>
+                
+                <ion-item>
+                    <ion-label position='floating'>Email:</ion-label>
+                    <ion-input type='string' 
+                               [(ngModel)]="orderInfo.newMail" 
+                               name='newmail' 
+                               pattern='^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$'
+                               inputmode="email"></ion-input>
                 </ion-item>
             </section>
-            
 
+            <!-- comentario general de la orden -->
             <ion-list-header color='dark'>
                 <ion-label>Leave a coment for the restaurant</ion-label>
             </ion-list-header>
@@ -77,6 +117,7 @@
             </ion-item>
         </ion-list>
     
+        <!-- este mensaje se muestra si el resturant esta cerrado -->
         <ion-text color="" *ngIf='dataService.currentRest.open == 0'>
             <p class="ion-padding">We're sorry the restaurant is close</p>
         </ion-text>
@@ -86,6 +127,7 @@
                     type='submit'
                     [disabled]='userinfoform.invalid'
                     class="ion-padding"
+                    shape='round'
                     *ngIf='dataService.currentRest.open == 1'>
             Comfirm (Go to checkout)
         </ion-button>   

@@ -5,6 +5,7 @@
 
   <img src='../../assets/img/steak.svg' class="pstart">
 
+  <!-- segmento con los pasos a seguir(categorias de los ingredientes) -->
   <ion-segment (ionChange)="segmentChanged($event)"
                class = 'top-20'
                color='dark'>
@@ -15,8 +16,9 @@
 
   </ion-segment>
 
+  <!-- lista deingredientes segun el paso seleccionado -->
   <ion-list>
-
+    <!-- instrucciones para seleccionar los ingredientes -->
     <ion-list-header *ngFor='let step of currentStep | async'>
       <ion-text color="dark">
         <h3>{{step.descripcion}}</h3>
@@ -40,6 +42,7 @@
 
   </ion-list>
 
+  <!-- comentarios extras -->
   <ion-item >
     <ion-label position="floating" >Notes</ion-label>
     <ion-input type="text" color="success"></ion-input>

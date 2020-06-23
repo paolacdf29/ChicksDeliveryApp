@@ -15,7 +15,7 @@ const URL = environment.url;
 
 export class SessionService {
 
-  user: user[];
+  user: user[] = null;
   token: string;
   alert = '';
 
@@ -48,6 +48,7 @@ export class SessionService {
         .subscribe( respuesta =>{
             if(respuesta['ok']){
               this.guardarToken(respuesta['token']);
+              this.validarToken();
               resolve(true);
             }else{
               this.token = null;
@@ -93,8 +94,10 @@ export class SessionService {
     return new Promise(resolve=>{
       this.http.post(URL + '/api/users/registro', usuario)
           .subscribe(respuesta=>{
+            console.log(respuesta);
             if(respuesta['ok']){
-              this.guardarToken(respuesta['token'])
+              this.guardarToken(respuesta['token']);
+              this.cargarToken();
               resolve(true);
             }else{
               this.token = null;
@@ -128,6 +131,7 @@ export class SessionService {
 
   logOut(){
     this.token = null;
+    this.user = null;
     this.storage.clear();
     console.log('user out')
     return this.http.get(URL + '/api/login/logout');
@@ -148,9 +152,8 @@ export class SessionService {
   }
 
   loadSession(){
-    if(this.user == null){
-      this.validarToken();
-    }
+    this.cargarToken();
+    this.validarToken();
   }
 
   updateuser(user){
@@ -205,6 +208,17 @@ export class SessionService {
       duration: 1000
     });
     toast.present();
+  }
+
+  islogged(){
+    this.cargarToken();
+
+    if(this.token == null){
+      return false;
+    }else{
+      return true;
+    }
+
   }
 
 }

@@ -47,16 +47,6 @@ export class ProductosService {
     return this.http.get<any[]>(URL + '/api/product/details/' + id_d, {headers});
   }
 
-  updateCurrentProduct(cantidad: number, comentario: string, sides: string, extras: string, nos: string, recargo: number){
-    this.currentProduct.sides = sides;
-    this.currentProduct.extras = extras;
-    this.currentProduct.dismiss = nos;
-    this.currentProduct.cantidad = cantidad;
-    this.currentProduct.comentario = comentario;
-    this.currentProduct.recargo = recargo;    
-    return this.currentProduct
-  }
-
   getCustomSteps(id_p: number){
     
     return this.http.get<customStep[]>(URL + '/api/product/custom/' + id_p)

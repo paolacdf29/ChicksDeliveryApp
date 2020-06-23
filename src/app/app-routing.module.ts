@@ -22,13 +22,15 @@ const routes: Routes = [
   },
   {
     path: 'step3',
-    loadChildren: () => import('./pages/step3/step3.module').then( m => m.Step3PageModule),
-    canLoad: [ UsuarioGuard ]
+    loadChildren: () => import('./pages/step3/step3.module').then( m => m.Step3PageModule)
   },
   {
     path: 'step4',
-    loadChildren: () => import('./pages/step4/step4.module').then( m => m.Step4PageModule),
-    canLoad: [ UsuarioGuard ]
+    loadChildren: () => import('./pages/step4/step4.module').then( m => m.Step4PageModule)
+  },
+  {
+    path: 'step4/:details',
+    loadChildren: () => import('./pages/step4/step4.module').then( m => m.Step4PageModule)
   },
   {
     path: 'carrito',
@@ -69,7 +71,8 @@ const routes: Routes = [
   },
   {
     path: 'details',
-    loadChildren: () => import('./pages/details/details.module').then( m => m.DetailsPageModule)
+    loadChildren: () => import('./pages/details/details.module').then( m => m.DetailsPageModule),
+    canLoad: [ UsuarioGuard ]
   },
   {
     path: 'passpage',
@@ -77,8 +80,8 @@ const routes: Routes = [
     canLoad: [ UsuarioGuard ]
   },
   {
-    path: 'test',
-    loadChildren: () => import('./pages/test/test.module').then( m => m.TestPageModule)
+    path: 'track',
+    loadChildren: () => import('./pages/track/track.module').then( m => m.TrackPageModule)
   }
 ];
 

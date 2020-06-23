@@ -7,6 +7,8 @@
 
 <ion-content>
   <div id="form-container">
+  
+  <!-- campos obtenidos de la libreria de square, organizados para q se vea bonito  -->
   <ion-grid fixed>
     <ion-row>
       <ion-col size="12"><div id="sq-card-number" ></div>
@@ -19,25 +21,30 @@
       <ion-col size="4"><div id="sq-postal-code" class='sq-input'></div></ion-col>
     </ion-row>
 
-
-    <input type="hidden" id="sq-payment" value='1'>
+    <ion-row>
+      <ion-col size="12" class="ion-padding">
+        <ion-text color="danger">
+          <p>{{msj}}</p>
+        </ion-text>
+      </ion-col>
+    </ion-row>
 
     <ion-button (click)="onGetCardNonce($event)" 
                 expand='block'
                 id="sq-creditcard">
-      Pay ${{cartService.payment}}
+      Pay ${{cartService.payment.toFixed(2)}}
     </ion-button>
+
+    <ion-item>
+      <ion-label color="danger">{{cartService.alerta}}</ion-label>
+    </ion-item>
   </ion-grid>
 
   </div>
 
-  <!-- <ion-button (click)="pagar()" 
-              expand="block"
-              color='dark'>
-    Salir con argumentos
-  </ion-button> -->
 </ion-content>
 
+<!-- una pequeña aclaratoria -->
 <ion-footer>
   <ion-card-subtitle>
     This payment is made through Square Payments platform 

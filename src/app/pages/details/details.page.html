@@ -8,11 +8,13 @@
 
   <ion-card-content>
     
+    <!-- datos generales de la orden -->
     <ion-label>
       <p>Starting time: {{this.ordersService.CurrentOrden.active}}</p>
       <p>Finished time: {{this.ordersService.CurrentOrden.completado}}</p>
     </ion-label>
 
+    <!-- lista con los productos solicitados en la orden -->
     <ion-list>
       <ion-item *ngFor='let item of orderItems | async'>
         <ion-label>
@@ -28,8 +30,11 @@
       </ion-item>
     </ion-list>
 
+
     <ion-label>
-      <p>Total: {{this.ordersService.CurrentOrden.total}} </p>
+      <p>tips: {{this.ordersService.CurrentOrden.tips.toFixed(2)}}</p>
+      <p>tax: {{this.ordersService.CurrentOrden.tax.toFixed(2)}}</p>
+      <p>Total: {{this.ordersService.CurrentOrden.total.toFixed(2)}} </p>
     </ion-label>
   </ion-card-content>
 

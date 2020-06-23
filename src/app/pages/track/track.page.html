@@ -1,0 +1,35 @@
+<app-header titulo='Tracking page'></app-header>
+
+<ion-content>
+  <ion-list>
+    <!-- permita buscar el estado de un pedido solo con el numero de orden -->
+    <ion-item>
+      <ion-input type="number" 
+                 placeholder="Type the order id" 
+                 name='trackid'
+                 (ionBlur)='trackmepls($event)'></ion-input>
+      <!-- <ion-button (click)="trackmepls($event)" color="success">
+        Track!
+      </ion-button> -->
+    </ion-item>
+
+    <!-- lista de ordenes en curso (solo para usuarios logeados) -->
+    <ion-list-header>
+      <ion-label>
+        <h2>Active orders</h2>
+      </ion-label>
+    </ion-list-header>
+
+    <ion-card *ngFor="let order of activeOrders |async">
+      <ion-item color="success" >
+        <ion-label>
+          <h3>Order No.{{order.id_d}}</h3>
+          <p>Started at: {{order.fecha}}</p>
+        </ion-label>
+        <ion-button (click)="showOrder(order.id_d)" fill="clear" color="dark">
+          See more
+        </ion-button>
+      </ion-item>
+    </ion-card>
+  </ion-list> 
+</ion-content>

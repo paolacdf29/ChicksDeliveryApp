@@ -4,8 +4,9 @@
 
 export const environment = {
   production: false,
-  //url: 'http://localhost:4000',
-  url : 'https://chicksdelivery-api-rest.herokuapp.com'
+  url: 'http://localhost:4000',
+  // url : 'https://chicksdelivery-api-rest.herokuapp.com',
+  sqId: 'sq0idp-RSCG29dURzZLFoE1m40QNw'
 };
 
 /*

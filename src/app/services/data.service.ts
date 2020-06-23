@@ -49,20 +49,8 @@ export class DataService {
   }
 
   setRestByProduct(producto: items){
-    return new Promise(resolve =>{
-      const rid = producto.id_r_p
-      this.http.get<any>( URL + '/api/start/restaurant/' + rid )
-        .subscribe(resp =>{
-          if(resp['error']){
-            console.log(resp['error']);
-            resolve(false);
-          }else{
-            this.currentRest = resp;
-            resolve(true)
-          }
-        })
-    })
-    
+    const rid = producto.id_r_p;
+    this.currentRest = this.restaurants.find(elemnt => elemnt.id_r == rid );
   }
 
 }

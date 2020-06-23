@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { NavController } from '@ionic/angular';
+import { Observable } from 'rxjs';
 
-import { DataService } from '../../services/data.service';
-import { items, rest } from 'src/app/interfaces/interfaces';
-import { ProductosService } from '../../services/productos.service';
 import { environment } from 'src/environments/environment';
-
-const URL = environment.url;
+import { items, rest } from 'src/app/interfaces/interfaces';
+import { DataService } from '../../services/data.service';
+import { ProductosService } from '../../services/productos.service';
 
 @Component({
   selector: 'app-restaurant',
@@ -17,20 +15,21 @@ const URL = environment.url;
 
 export class RestaurantPage implements OnInit {
 
-  productos: Observable<items[]>;
-  prodURL: string;
-  restaurant: rest;
+  productos: Observable<items[]>; //Lista de productos
+  prodURL: string; //URL de la imagen del rest
+  restaurant: rest; //restaurant
 
-  constructor(public dataService: DataService,
-              private navCtrl: NavController,
+  constructor(private navCtrl: NavController,
+              public dataService: DataService,
               private productosService: ProductosService) { }
 
   ngOnInit() {
     this.restaurant = this.dataService.currentRest;
     this.productos = this.productosService.getProductsByRest(this.restaurant.id_r);
-    this.prodURL = URL;
+    this.prodURL = environment.url;
   }
 
+  //carga el producto en el servicio y redirige a la pagina de especificaciones del producto
   showDetails(item){
     this.productosService.currentProduct = item;
     if(item.id_cat_o == 7){

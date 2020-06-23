@@ -1,11 +1,13 @@
-import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { CartService } from '../../services/cart.service';
-import { OrdersService } from '../../services/orders.service';
+import { Component, OnInit, Input } from '@angular/core';
+import { ModalController, LoadingController } from '@ionic/angular';
 
-declare var SqPaymentForm : any;
-var amount = 1;
-var oid;
+import { CartService } from '../../services/cart.service';
+import { environment } from '../../../environments/environment';
+
+const sqId: string = environment.sqId;
+declare var SqPaymentForm : any; //Variable magica para que funcione el form de square
+var sqnonce: string; //Variable magica para guardar el token de square
+var err: string = "";
 
 @Component({
   selector: 'app-payment-modal',
@@ -13,22 +15,23 @@ var oid;
   styleUrls: ['./payment-modal.page.scss'],
 })
 
-export class PaymentModalPage implements OnInit, AfterViewInit {
+export class PaymentModalPage implements OnInit {
 
   @Input() nombre: string;
-  paymentForm; //this is our payment form object
-  payme: number = 0;
+  paymentForm: any; //this is our payment form object
+  msj: string;
   
   constructor( private modalCtrl: ModalController,
                public cartService: CartService,
-               private ordersService: OrdersService) { }
+               private loadingCtrl: LoadingController) { }
 
   ngOnInit() {
     
+    //objeto proporcionado en el tutorial de square
     this.paymentForm = new SqPaymentForm({
       
       // Initialize the payment form elements
-      applicationId: "sandbox-sq0idb-BOG3kBaSsrnAK6QNO9-UOg",
+      applicationId: sqId,
       inputClass: 'sq-input',
       autoBuild: false,
 
@@ -58,14 +61,7 @@ export class PaymentModalPage implements OnInit, AfterViewInit {
           elementId: 'sq-postal-code',
           placeholder: 'Postal'
       },
-      payment: {
-        amount: 1,
-      },
-      // paymentAmount:{
-      //   elementId: 'payment-amount',
-      //   placeholder: 'amount'
-      // },
-      
+
       // SqPaymentForm callback functions
       callbacks: {
           /*
@@ -77,82 +73,58 @@ export class PaymentModalPage implements OnInit, AfterViewInit {
               // Log errors from nonce generation to the browser developer console.
               console.error('Encountered errors:');
               errors.forEach(function (error) {
+      
                   console.error('  ' + error.message);
+                  err = error.message;
+
               });
               console.log('Encountered errors, check browser developer console for more details');
               return;
           }
-            
-            //console.log(`The generated nonce is:\n${nonce}`);
-            console.log(amount);
-             fetch('http://localhost:4000/api/sqPay/process-payment', {
-
-              method: 'POST',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                nonce: nonce,
-                payamount: amount,
-                order: oid
-              })
-            })
-
-            
-            .catch(err => {
-              alert('Network error: ' + err);
-            })
-            .then(response => {
-              if (!response['ok']) {
-                return 'error'
-              }
-              return response
-            })
-
-            .then(data => {
-              console.log('hola desde aqui');
-              console.log(data);
-              //alert('Payment complete successfully!\nCheck browser developer console for more details');
-            })
-            .catch(err => {
-              console.error(err);
-              //alert('Payment failed to complete!\nCheck browser developer console for more details');
-            });
+            sqnonce = nonce;
+            //aqui normalmente hace el llamado al backend 
+            //pero en este caso solo guardamos el token y se hace la llamada en el servicio cartService
             }
-           }
+          }
     });
 
     this.paymentForm.build();
   }
 
+  //Sale de la pagina sin hacer nada
   salirSinPagar(){
     this.modalCtrl.dismiss();
   }
-
-  pagar(){
-    
-  }
-
   
+  //Solicita el token SqPaymentForm y luego el pago en a cartservice
   async onGetCardNonce(event) {
-    // Don't submit the form until SqPaymentForm returns with a nonce
+    // Don't submit the form until SqPaymentForm returns with a nonce 
+    // Probablemente no aplica en este caso pero lo dejo por si acaso
     event.preventDefault();
-    
-    //Set the amount to pay
-    amount = this.cartService.payment;
-    
-    //Send the order to the server
-    oid = await this.cartService.checkout('CreditCard');
 
     // Request a nonce from the SqPaymentForm object
-    this.paymentForm.requestCardNonce();
+    await this.paymentForm.requestCardNonce();
 
-    // Reset the cart
-    this.cartService.clearCart();
-
-    this.modalCtrl.dismiss({nombre: 'paolin'});
+    //Send the payment to the backend
+    if(await this.presentLoading()){
+      this.msj = err;
+      if(this.msj == ""){
+        console.log("entro")
+        await this.cartService.sqPayCall(sqnonce);
+        this.modalCtrl.dismiss({nombre: 'paolin'});
+      }
+    }
   }
 
-  ngAfterViewInit(){}
+  async presentLoading() {
+    const loading = await this.loadingCtrl.create({
+      message: 'Please wait...',
+      duration: 2000
+    });
+    await loading.present();
+
+    const { role, data } = await loading.onDidDismiss();
+    return true;
+  }
+
 }

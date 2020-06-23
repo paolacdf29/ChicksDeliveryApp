@@ -2,9 +2,10 @@
 
 <ion-content>
 
-  <img src="{{prodURL}}/images/restaurants/{{restaurant.logo}}" class="logo-present">
+  <!-- -----------------Datos del restaurante-------------------- -->
+  <img src="{{prodURL}}/images/restaurants/{{restaurant.logo}}" class="logo-present" color="light">
 
-  <ion-item class="details-slot">
+  <ion-item class="details-slot" color='light'>
     <ion-label>
       <p>
         <ion-icon name="location-sharp" slot="start"></ion-icon>
@@ -23,22 +24,26 @@
     </ion-label>
   </ion-item>
   
-  <ion-list class="ion-padding">
+  <!-- -----------------Lista de productos-------------------- -->
+  <ion-list >
       <ion-item *ngFor='let item of productos | async'
                 routerLink='/product'
                 (click)="showDetails(item)"
                 routerLink='/product'>
 
+        <!-- imagen pequeña del producto -->
         <ion-thumbnail slot="start">
           <ion-img src='../../assets/img/categories_default/cat0{{item.id_cat_o}}.svg' 
                    *ngIf= "item.pic == ''"></ion-img>
           <ion-img src='{{prodURL}}/images/products/{{item.pic}}' *ngIf= "item.pic != ''"></ion-img>
         </ion-thumbnail>
+
+        <!-- Datos basicos del producto -->
         <ion-label>
           <h3>{{item.Nombre}}</h3>
           <p class="ion-text-lowercase">{{item.descripcion}}</p>
           <p>
-            <ion-chip color="success">
+            <ion-chip color="secondary">
               <ion-icon name="pricetags"></ion-icon>
               <ion-label *ngIf='item.big == 0 && item.xl == 0'> ${{item.precio}}</ion-label>
               <ion-label *ngIf='item.big > 0 && item.xl == 0'> ${{item.precio}} / ${{item.big}}</ion-label>
@@ -46,6 +51,8 @@
             </ion-chip>
           </p>
         </ion-label>
+
+        <!-- boton de añadir -->
         <ion-icon slot="end" name="add"></ion-icon>
 
       </ion-item>

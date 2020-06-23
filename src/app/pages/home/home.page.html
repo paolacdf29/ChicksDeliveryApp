@@ -1,22 +1,12 @@
-
 <app-header titulo='Home'></app-header>
 
 <ion-content class="ion-padding">
-    <!-- <p>
-        <ion-chip outline 
-                  [color]="cat.color" 
-                  *ngFor='let cat of categories | async'
-                  routerLink='/step1/{{cat.id_cat}}'>
-            <ion-icon [name]="cat.icon"></ion-icon>
-            <ion-label>{{cat.nombre_cat}}</ion-label>
-        </ion-chip>
-    </p> -->
 
+    <!-- categorias de productos -->
     <ion-slides mode="ios" [options]='catsSlides'>
         <ion-slide  *ngFor='let cat of categories | async'
                     routerLink='/step1/{{cat.id_cat}}'
                     class="cat-slides">
-
             <p>
                 <ion-thumbnail class="img-center">
                     <ion-img src='../../assets/img/categories_default/cat0{{cat.id_cat}}.svg'></ion-img>
@@ -26,84 +16,54 @@
         </ion-slide>
     </ion-slides>
 
+    <!-- slides con las promociones -->
     <ion-list-header class="top-20">
         <ion-label>Promos</ion-label>
     </ion-list-header>
     <ion-slides mode="ios" pager="ios" scrollbar="ios" class="mdBanner">
-        <ion-slide >
-            <ion-toolbar color='danger' routerLink='/step1' class="ion-padding">
-                <p>Arepita muy rica</p>
-                <ion-card-content>
-                    <ion-icon name="star-sharp"></ion-icon>
-                    <ion-icon name="star-sharp"></ion-icon>
-                    <ion-icon name="star-sharp"></ion-icon>
-                    <ion-icon name="star-sharp"></ion-icon>
-                    <ion-icon name="star-sharp"></ion-icon>
-                </ion-card-content>
+        <ion-slide color='warning'>
+            <ion-toolbar color='#ffc409' routerLink='/step1'>
+                <img src="{{imgURL}}/images/promos/promo11chicks2.jpg" class="img-center">
             </ion-toolbar>
         </ion-slide>
 
         <ion-slide color='warning'>
-            <ion-toolbar color='warning' routerLink='/step1' class="ion-padding">
-                <p>Arepita muy rica</p>
-                <ion-card-content>
-                    <ion-icon name="star-sharp"></ion-icon>
-                    <ion-icon name="star-sharp"></ion-icon>
-                    <ion-icon name="star-sharp"></ion-icon>
-                    <ion-icon name="star-sharp"></ion-icon>
-                    <ion-icon name="star-sharp"></ion-icon>
-                </ion-card-content>
+            <ion-toolbar color='#ffc409' routerLink='/step1'>
+                <img src="{{imgURL}}/images/promos/promo11chicks.jpg" class="img-center">
             </ion-toolbar>
         </ion-slide>
-          
-        <ion-slide>
-            <ion-toolbar color='success' routerLink='/step1' class="ion-padding">
-                <p>Arepita muy rica</p>
-                <ion-card-content>
-                    <ion-icon name="star-sharp"></ion-icon>
-                    <ion-icon name="star-sharp"></ion-icon>
-                    <ion-icon name="star-sharp"></ion-icon>
-                    <ion-icon name="star-sharp"></ion-icon>
-                    <ion-icon name="star-sharp"></ion-icon>
-                </ion-card-content>
-            </ion-toolbar>
-        </ion-slide>
-        
     </ion-slides>
 
+    <!-- lista de restaurantes -->
     <ion-list>
-
         <ion-list-header>
             <ion-label>Restaurants available</ion-label>
         </ion-list-header>
-
         <ion-card *ngFor='let restaurant of this.dataService.restaurants'
                   routerLink='/restaurant' 
-                  color="medium"
+                  color="light"
                   (click)="setRestaurant(restaurant)"> 
             <img src="{{imgURL}}/images/restaurants/{{restaurant.logo}}" class="logo-img img-center">
             <ion-card-header color="dark" class="logo-header">
-                <ion-card-title *ngIf='restaurant.open == 1'>{{restaurant.name}}</ion-card-title>
-                <ion-card-title *ngIf='restaurant.open == 0'>Close</ion-card-title>
+                <ion-card-title *ngIf='restaurant.open == 1' class="ion-text-center">View all products</ion-card-title>
+                <ion-card-title *ngIf='restaurant.open == 0' class="ion-text-center">Close</ion-card-title>
             </ion-card-header>
         </ion-card>
-        
     </ion-list>
     
-    <ion-button (click)="gethome()"
-                fill='clear'
+    <!-- ordenes activas -->
+    <ion-button fill='clear'
                 expand='block'
                 class="top-50"
-                *ngIf='sessionService.token'
+                *ngIf='logged'
                 color='dark'>
             Active orders
     </ion-button>
     <ion-slides mode="ios" scrollbar>
         <ion-slide *ngFor="let order of activeOrders | async">
             <ion-card class="slide-card"
-                      color="medium"
-                      (click)="showOrder(order.id_d)"
-                      routerLink='/step4'>
+                      color="tertiary"
+                      (click)="showOrder(order.id_d)">
                 <ion-card-header>
                     <ion-card-subtitle>Click here to see more details</ion-card-subtitle>
                     <h3>Order #{{order.id_d}}</h3>
@@ -113,12 +73,12 @@
         </ion-slide>
     </ion-slides>
 
-    <ion-button expand='block' 
+    <!-- <ion-button expand='block' 
                 routerLink='/step1' 
                 color="dark" 
                 class="top-20">
         View all products
-    </ion-button>
+    </ion-button> -->
 
 
 </ion-content>

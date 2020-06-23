@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastController } from '@ionic/angular';
 import { NgForm } from '@angular/forms';
+import { ToastController } from '@ionic/angular';
 
 import { user } from '../../interfaces/interfaces';
 import { SessionService } from '../../services/session.service';
@@ -12,12 +12,12 @@ import { SessionService } from '../../services/session.service';
 })
 export class UserPage implements OnInit {
 
-  users: user[];
-  edit: boolean = false;
+  users: user[] = []; //usuario
+  edit: boolean = false; //verdadero cuando el usuario selecciona editar
   update = {
     tlf: 0,
     direc: ''
-  }
+  }//info a editar
   
   constructor(public sessionService: SessionService,
               private toastCtrl: ToastController) { }
@@ -28,14 +28,8 @@ export class UserPage implements OnInit {
     this.update.direc = this.users[0].direccion_client;
   }
 
-  enableEdit(){
-    if(this.edit){
-      this.edit = false;
-    }else{
-      this.edit = true;
-    }
-  }
-
+  
+  
   async presentToast(msj: string) {
     const toast = await this.toastCtrl.create({
       message: msj,
@@ -45,6 +39,12 @@ export class UserPage implements OnInit {
     toast.present();
   }
 
+  //activa la opcion de editar los datos
+  enableEdit(){
+    this.edit = !this.edit;
+  }
+
+  //envia los nuevos datos del usuario 
   async onSubmitTemplate(form: NgForm){
     if(form.valid){
       const ok = await this.sessionService.updateuser(this.update);

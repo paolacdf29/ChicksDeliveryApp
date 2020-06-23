@@ -8,7 +8,7 @@
     </ion-refresher>
 
     <ion-card-header>
-        <ion-button fill='clear' color="success" routerLink='/details'>
+        <ion-button fill='clear' color="success" routerLink='/details' *ngIf='details'>
             <ion-icon slot="icon-only" name="add"></ion-icon>
             <ion-card-subtitle>Details</ion-card-subtitle>
         </ion-button>

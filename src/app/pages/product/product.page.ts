@@ -1,11 +1,11 @@
 import { Component, OnInit} from '@angular/core';
-import { Observable } from 'rxjs';
 import { ToastController } from '@ionic/angular';
+import { Observable } from 'rxjs';
 
-import { CartService } from '../../services/cart.service';
-import { ingredient } from '../../interfaces/interfaces';
-import { ProductosService } from '../../services/productos.service';
+import { ingredient, precompra } from '../../interfaces/interfaces';
 import { environment } from 'src/environments/environment';
+import { ProductosService } from '../../services/productos.service';
+import { CartService } from '../../services/cart.service';
 
 const URL = environment.url + "/images/products/";
 
@@ -17,16 +17,16 @@ const URL = environment.url + "/images/products/";
 
 export class ProductPage implements OnInit {
 
-  ingredientes : Observable<ingredient[]>;
-  prodURL: string;
-  cantidad = 1;
-  notes = '';
-  extras = [];
-  sides = [];
-  nos = [];
-  type = '';
-  recargo = 0;
-  size = 1;
+  ingredientes: Observable<ingredient[]>; //ingredientes para los sides y extras
+  prodURL: string; //URL de la imagen
+  cantidad = 1; //Cantidad del producto (por defecto es uno solo)
+  notes = ''; //Comentarios
+  extras = []; //Lista de ingredientes extras
+  sides = []; //Lista de ingredientes sides
+  nos = []; //Lista de ingredientes a quitar
+  type = ''; //Tipo de ingredientes a mostrar (sides, extras, nos)
+  recargo = 0; //Recargos por ingredientes extras y sides
+  size = 1; //Tamaño del producto (por defecto es individual)
 
   constructor( private toastCtrl: ToastController, 
                private cartService: CartService,
@@ -45,10 +45,12 @@ export class ProductPage implements OnInit {
     toast.present();
   }
 
+  //le da un valor a "type" y con esto activa la lista de productos
   segmentChanged(event){
     this.type = event.detail.value;
   }
 
+  //Agrega un ingrediente a su lista correspondiente
   addIngredient( ingredient ){
     if(ingredient.type == 'side'){
       this.sides.push(ingredient);
@@ -66,6 +68,19 @@ export class ProductPage implements OnInit {
     }
   }
 
+  //Agrega un ingrediente a la lista de ingredientes
+  seethis(event){
+    if(event.target.value != ''){
+      const newingre = {
+        type : 'nos',
+        nombre : event.target.value,
+        valor: 0
+      }
+      this.addIngredient(newingre)
+    }
+  }
+
+  //elimina un ingrediente de las listas
   quitIngredient(i: number, item){
     if(item.type == 'side'){
       this.sides.splice(i, 1);
@@ -81,28 +96,8 @@ export class ProductPage implements OnInit {
       this.recargo -= item.valor;
     }
   }
-
-  onSubmitTemplate(){
-
-  }
   
-  addItem(){
-    if(this.size != 1){
-      
-      if(this.size ==2){
-        this.recargo += this.productosService.currentProduct.big -  this.productosService.currentProduct.precio;
-        this.notes += 'Size Large';
-      }else{
-        this.recargo += this.productosService.currentProduct.big - this.productosService.currentProduct.precio;
-        this.notes += 'Size XL';
-      }
-    }
-    this.productosService.updateCurrentProduct(this.cantidad, this.notes, this.arryToStr(this.sides), this.arryToStr(this.extras), this.arryToStr(this.nos), this.recargo)
-    this.cartService.addToCart(this.productosService.currentProduct);
-    this.resetPage();
-    this.presentToast('Your item has been added to the cart.');
-  }
-
+  //convierte los arreglos/listas de ingredientes en un string
   arryToStr(ingredientes: ingredient[]){
     let ingStrList = '';
     if(ingredientes.length > 1){
@@ -116,16 +111,7 @@ export class ProductPage implements OnInit {
     return ingStrList
   }
 
-  resetPage(){
-    this.cantidad = 1;
-    this.notes = '';
-    this.extras = [];
-    this.sides = [];
-    this.nos = [];
-    this.type = '';
-    this.recargo = 0;
-  }
-
+  //cambia la cantidad de productos
   setQuantity(option: string){
     if(option == 'remove'){
       if(this.cantidad > 1){
@@ -136,7 +122,50 @@ export class ProductPage implements OnInit {
     }
   }
 
+  //cambia el temaño del producto
   chengesize(){
     console.log(this.size);
   }
+
+  //Agrega el producto al carrito con todos las especificaciones
+  addItem(){
+    let item: precompra = {
+      id_p: this.productosService.currentProduct.id_P,
+      nombre: this.productosService.currentProduct.Nombre,
+      comentario: this.notes,
+      cantidad: this.cantidad,
+      dismiss: this.arryToStr(this.nos),
+      extras: this.arryToStr(this.extras),
+      sides: this.arryToStr(this.sides),
+      recargo: this.recargo,
+      price: 0
+    }
+
+    if(this.size == 1){
+      item.price = this.productosService.currentProduct.precio;
+      item.comentario += ', Size individual';
+    }else if(this.size ==2){
+      item.price = this.productosService.currentProduct.big;
+      item.comentario += ', Size Large';
+    }else if(this.size == 3){
+      item.price = this.productosService.currentProduct.xl;
+      item.comentario += ', Size XL';
+    }
+
+    this.cartService.addToCart(item);
+    this.resetPage();
+    this.presentToast('Your item has been added to the cart.');
+  }
+
+  //resetea todos los valores a los valores inciales
+  resetPage(){
+    this.cantidad = 1;
+    this.notes = '';
+    this.extras = [];
+    this.sides = [];
+    this.nos = [];
+    this.type = '';
+    this.recargo = 0;
+  }
+
 }
